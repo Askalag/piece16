@@ -1,0 +1,22 @@
+version: 1.0
+db:
+    postgres:
+        host: ""
+        port: ""
+        username: ""
+        password: ""
+        dbname: ""
+        sslmode: ""
+        driver: "pgx"
+log:
+    level: "Debug"
+    codes:
+#  global:
+        1000en: "unknown error"
+#  initialization:
+        2000en: "error loading .env / system environment"
+        2001en: "Can't set log level mode, default: [info]"
+        2002en: "Can't load environments or .env file"
+#  DataBase:
+        3000en: "Cannot get connection to db"
+        3001en: "Common db errors"
