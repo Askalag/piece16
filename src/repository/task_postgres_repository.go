@@ -14,7 +14,7 @@ func (repo *TaskPostgres) Create(obj model.Task) (int64, error) {
 	res, err := repo.db.NamedExec(
 		`INSERT INTO task (title, tree_level) VALUES (:title, :treeLevel)`,
 		map[string]interface{}{
-			"title": obj.Title,
+			"title":     obj.Title,
 			"treeLevel": obj.TreeLevel,
 		})
 	if err != nil {
@@ -27,6 +27,10 @@ func (repo *TaskPostgres) Create(obj model.Task) (int64, error) {
 		log.WarnWithCode(3001, err.Error())
 	}
 	return lastInsertId, nil
+}
+
+func (repo *TaskPostgres) GetAll() ([]model.Task, error) {
+	return nil, nil
 }
 
 func NewTaskPostgres(db *sqlx.DB) *TaskPostgres {

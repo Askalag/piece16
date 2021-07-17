@@ -1,4 +1,4 @@
-package piece
+package piece16
 
 import (
 	"github.com/Askalag/piece16/src/service"

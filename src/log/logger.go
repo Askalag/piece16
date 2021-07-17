@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var	language = "en"
+var language = "en"
 
 // InitLogger logger initialization
 // Format, Level, TimestampFormat...
@@ -22,11 +22,19 @@ func InitLogger(level string) {
 	log.SetLevel(lv)
 }
 
+func InfoWithCode(c int, args ...interface{}) {
+	key := fmt.Sprintf("log.codes.%d%s", c, language)
+	log.WithFields(log.Fields{
+		"logCode": c,
+		"logMsg":  viper.GetString(key),
+	}).Warn(args)
+}
+
 func WarnWithCode(c int, args ...interface{}) {
 	key := fmt.Sprintf("log.codes.%d%s", c, language)
 	log.WithFields(log.Fields{
 		"logCode": c,
-		"logMsg": viper.GetString(key),
+		"logMsg":  viper.GetString(key),
 	}).Warn(args)
 }
 
@@ -34,6 +42,6 @@ func FatalWithCode(c int, args ...interface{}) {
 	key := fmt.Sprintf("log.codes.%d%s", c, language)
 	log.WithFields(log.Fields{
 		"logCode": c,
-		"logMsg": viper.GetString(key),
+		"logMsg":  viper.GetString(key),
 	}).Fatal(args)
 }

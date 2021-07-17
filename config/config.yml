@@ -1,4 +1,8 @@
 version: 1.0
+server:
+    idleTimeout: 120s
+    readTimeout: 1s
+    writeTimeout: 1s
 db:
     postgres:
         host: ""
@@ -11,12 +15,15 @@ db:
 log:
     level: "Debug"
     codes:
-#  global:
+#   global:
         1000en: "unknown error"
-#  initialization:
+#   initialization:
         2000en: "error loading .env / system environment"
         2001en: "Can't set log level mode, default: [info]"
         2002en: "Can't load environments or .env file"
-#  DataBase:
+#   dataBase:
         3000en: "Cannot get connection to db"
         3001en: "Common db errors"
+#   server:
+        4001en: "Server starting..."
+        4002en: "Received terminate, server shutting down..."
