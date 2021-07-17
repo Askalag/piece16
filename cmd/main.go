@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/Askalag/piece16"
+	"github.com/Askalag/piece16/src"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/repository"
 	"github.com/Askalag/piece16/src/service"
@@ -37,7 +38,7 @@ func main() {
 	srv := service.NewService(repo)
 
 	// uow unit of work...
-	uow := piece16.NewUOW(srv)
+	uow := src.NewUOW(srv)
 	uow.S1.TaskItem.GetAll()
 }
 
