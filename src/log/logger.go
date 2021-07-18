@@ -27,7 +27,7 @@ func InfoWithCode(c int, args ...interface{}) {
 	log.WithFields(log.Fields{
 		"logCode": c,
 		"logMsg":  viper.GetString(key),
-	}).Warn(args)
+	}).Info(args)
 }
 
 func WarnWithCode(c int, args ...interface{}) {

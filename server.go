@@ -61,7 +61,7 @@ func (s *Server) GracefulShutdown() {
 	sigChan := make(chan os.Signal)
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT)
 	<-sigChan
-	log.InfoWithCode(4002)
+	log.InfoWithCode(4003)
 	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	_ = s.httpServer.Shutdown(tc)
 }

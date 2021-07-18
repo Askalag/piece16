@@ -28,4 +28,5 @@ log:
 #   server:
         4000en: "Unable to Start the Server"
         4001en: "Server starting..."
-        4002en: "Received terminate, server shutting down..."
+        4002en: "Listen and serve..."
+        4003en: "Received terminate, server shutting down..."

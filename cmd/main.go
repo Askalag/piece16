@@ -46,17 +46,18 @@ func serverStart(h http.Handler, db *sqlx.DB) {
 	cfg := piece16.LoadConfig()
 	srv := piece16.NewServer(cfg)
 
+	log.InfoWithCode(4001)
 	go func() {
-		if err := srv.Run(h); err != nil {
+		log.InfoWithCode(4002, srv.GetAddr())
+		if err := srv.Run(h); err != http.ErrServerClosed && err != nil {
 			log.FatalWithCode(4000, err.Error())
 		}
-		log.InfoWithCode(4001, srv.GetAddr())
 	}()
 
 	srv.GracefulShutdown()
 
 	if err := db.Close(); err != nil {
-		log.InfoWithCode(3002, err.Error())
+		log.InfoWithCode(3003, err.Error())
 	}
 }
 
