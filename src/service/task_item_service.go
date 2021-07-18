@@ -10,11 +10,11 @@ type TaskItemService struct {
 }
 
 func (s TaskItemService) Create(task model.TaskItem) (int64, error) {
-	panic("implement me")
+	return 0, nil
 }
 
 func (s TaskItemService) GetAll() ([]model.TaskItem, error) {
-	panic("implement me")
+	return nil, nil
 }
 
 func NewTaskItemService(r repository.TaskItemRepo) *TaskItemService {

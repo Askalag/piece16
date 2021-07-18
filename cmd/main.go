@@ -3,29 +3,24 @@ package main
 import (
 	"errors"
 	"github.com/Askalag/piece16"
-	"github.com/Askalag/piece16/src"
+	"github.com/Askalag/piece16/src/handler"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/repository"
 	"github.com/Askalag/piece16/src/service"
 	_ "github.com/jackc/pgx/stdlib"
+	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"net/http"
 )
 
 func main() {
 
-	Init()
+	loadRootConfig()
 
-	postgresConfig := &repository.Config{
-		Host:     piece16.GetEnv("TREE_POSTGRES_HOST", "localhost"),
-		Port:     piece16.GetEnv("TREE_POSTGRES_PORT", "5432"),
-		Username: piece16.GetEnv("TREE_POSTGRES_USERNAME", ""),
-		Password: piece16.GetEnv("TREE_POSTGRES_PASSWORD", ""),
-		DBName:   piece16.GetEnv("TREE_POSTGRES_DBNAME", ""),
-		SSLMode:  piece16.GetEnv("TREE_POSTGRES_SLLMODE", "disable"),
-	}
-	// dataBases...
+	// postgres...
+	postgresConfig := repository.LoadPostgresConfig()
 	postgresDB, ok := repository.NewPostgresDB(postgresConfig)
 	if ok != nil {
 		log.FatalWithCode(3000, ok.Error())
@@ -38,11 +33,34 @@ func main() {
 	srv := service.NewService(repo)
 
 	// uow unit of work...
-	uow := src.NewUOW(srv)
-	uow.S1.TaskItem.GetAll()
+	//uow := src.NewUOW(srv)
+
+	// handler...
+	h := handler.NewRootHandler(handler.MakeHandlers(srv))
+
+	// server...
+	serverStart(h, postgresDB)
 }
 
-func Init() {
+func serverStart(h http.Handler, db *sqlx.DB) {
+	cfg := piece16.LoadConfig()
+	srv := piece16.NewServer(cfg)
+
+	go func() {
+		if err := srv.Run(h); err != nil {
+			log.FatalWithCode(4000, err.Error())
+		}
+		log.InfoWithCode(4001, srv.GetAddr())
+	}()
+
+	srv.GracefulShutdown()
+
+	if err := db.Close(); err != nil {
+		log.InfoWithCode(3002, err.Error())
+	}
+}
+
+func loadRootConfig() {
 	// Config...
 	if err := loadConfig(); err != nil {
 		logrus.Fatal(err)
@@ -57,7 +75,7 @@ func Init() {
 }
 
 func loadConfig() error {
-	viper.AddConfigPath("src/config")
+	viper.AddConfigPath("config")
 	viper.SetConfigName("config")
 	if err := viper.ReadInConfig(); err != nil {
 		return errors.New("error while reading configuration file")

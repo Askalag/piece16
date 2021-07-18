@@ -24,6 +24,8 @@ log:
 #   dataBase:
         3000en: "Cannot get connection to db"
         3001en: "Common db errors"
+        3002en: "Error db connection close"
 #   server:
+        4000en: "Unable to Start the Server"
         4001en: "Server starting..."
         4002en: "Received terminate, server shutting down..."

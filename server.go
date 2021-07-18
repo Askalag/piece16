@@ -24,6 +24,10 @@ type Server struct {
 	config     *Config
 }
 
+func (s *Server) GetAddr() string {
+	return s.config.Addr
+}
+
 func NewServer(c *Config) *Server {
 	srv := new(Server)
 	srv.config = c

@@ -9,12 +9,16 @@ type TaskService struct {
 	repo repository.TaskRepo
 }
 
-func (s *TaskService) Create(task model.Task) (int64, error) {
-	return 0, nil
+func (s *TaskService) GetById(id int) (*model.Task, error) {
+	return s.repo.GetById(id)
 }
 
-func (s *TaskService) GetAll() ([]model.Task, error) {
-	return nil, nil
+func (s *TaskService) Create(task model.Task) (int, error) {
+	return s.repo.Create(task)
+}
+
+func (s *TaskService) GetAll() (*[]model.Task, error) {
+	return s.repo.GetAll()
 }
 
 func NewTaskService(r repository.TaskRepo) *TaskService {

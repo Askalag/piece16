@@ -12,16 +12,16 @@ type Handler struct {
 	tti *TaskTimeItemHandler
 }
 
-func NewHandler(s *service.Service) *Handler {
+func MakeHandlers(s *service.Service) *Handler {
 	return &Handler{
 		w:   NewWelcomeHandler(),
-		t:   NewTaskHandler(s.Task),
-		ti:  NewTaskItemHandler(s.TaskItem),
+		t:   NewTaskHandler(s.TaskService),
+		ti:  NewTaskItemHandler(s.TaskItemService),
 		tti: nil,
 	}
 }
 
-func AddRoutes(h *Handler) *gin.Engine {
+func NewRootHandler(h *Handler) *gin.Engine {
 	r := gin.New()
 
 	// Auth
@@ -30,16 +30,18 @@ func AddRoutes(h *Handler) *gin.Engine {
 	// Tree Rest Api
 	tApi := r.Group("/api")
 	{
-		// Welcome
-		wlc := tApi.Group("/hello")
+		// Welcome group
+		wlc := tApi.Group("/wlc")
 		{
-			wlc.GET("/", h.w.Hello)
+			wlc.GET("/h", h.w.Hello)
+			//wlc.GET("/t", h.w.Test)
 		}
 
-		// Task
-		task := tApi.Group("/tree")
+		// Task group
+		task := tApi.Group("/task")
 		{
-			task.GET("/")
+			task.GET("/", h.t.GetAllTask)
+			task.GET("/:id", h.t.GetById)
 			task.POST("/", h.t.CreateTask)
 		}
 	}

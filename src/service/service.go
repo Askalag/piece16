@@ -6,8 +6,9 @@ import (
 )
 
 type Task interface {
-	Create(task model.Task) (int64, error)
-	GetAll() ([]model.Task, error)
+	Create(task model.Task) (int, error)
+	GetAll() (*[]model.Task, error)
+	GetById(id int) (*model.Task, error)
 }
 
 type TaskItem interface {
@@ -19,14 +20,14 @@ type TaskTimeItem interface {
 }
 
 type Service struct {
-	Task
-	TaskItem
-	TaskTimeItem
+	TaskService         Task
+	TaskItemService     TaskItem
+	TaskTimeItemService TaskTimeItem
 }
 
 func NewService(r *repository.Repo) *Service {
 	return &Service{
-		Task:     NewTaskService(r),
-		TaskItem: NewTaskItemService(r),
+		TaskService:     NewTaskService(r),
+		TaskItemService: NewTaskItemService(r),
 	}
 }

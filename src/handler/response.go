@@ -6,31 +6,38 @@ import (
 	"time"
 )
 
+var version = "1.0"
+
 type SimpleResponse struct {
 	Success      bool
 	ErrorCode    int
 	ErrorMessage string
 	Time         time.Time
-	Data         map[string]interface{}
+	Ver          string
+	Data         []map[string]interface{}
 }
 
 func errorResponse(httpCode int, c *gin.Context, errCode int, errMsg string) {
-	res := &SimpleResponse{
-		Success:      false,
-		ErrorCode:    errCode,
-		ErrorMessage: errMsg,
-		Time:         time.Now().UTC(),
-	}
+	res := NewSimpleResponse()
+	res.ErrorCode = errCode
+	res.ErrorMessage = errMsg
 	c.AbortWithStatusJSON(httpCode, res)
 }
 
-func okResponse(c *gin.Context, data map[string]interface{}) {
-	res := &SimpleResponse{
-		Success:      true,
+func okResponse(c *gin.Context, data []map[string]interface{}) {
+	res := NewSimpleResponse()
+	res.Success = true
+	res.Data = data
+	c.JSON(http.StatusOK, res)
+}
+
+func NewSimpleResponse() *SimpleResponse {
+	return &SimpleResponse{
+		Success:      false,
 		ErrorCode:    0,
 		ErrorMessage: "",
 		Time:         time.Now().UTC(),
-		Data:         data,
+		Ver:          version,
+		Data:         nil,
 	}
-	c.JSON(http.StatusOK, res)
 }
