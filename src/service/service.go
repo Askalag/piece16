@@ -6,9 +6,11 @@ import (
 )
 
 type Task interface {
-	Create(task model.Task) (int, error)
+	Create(task *model.Task) (int, error)
 	GetAll() (*[]model.Task, error)
 	GetById(id int) (*model.Task, error)
+	Update(m *model.Task) error
+	DeleteById(id int) error
 }
 
 type TaskItem interface {

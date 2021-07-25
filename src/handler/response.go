@@ -14,7 +14,14 @@ type SimpleResponse struct {
 	ErrorMessage string
 	Time         time.Time
 	Ver          string
-	Data         []map[string]interface{}
+	Data         interface{}
+}
+
+func okIdsResponse(c *gin.Context, ids ...int) {
+	res := NewSimpleResponse()
+	res.Success = true
+	res.Data = ids
+	c.JSON(http.StatusOK, res.toJSON())
 }
 
 func errorResponse(httpCode int, c *gin.Context, errCode int, errMsg string) {
@@ -24,7 +31,7 @@ func errorResponse(httpCode int, c *gin.Context, errCode int, errMsg string) {
 	c.AbortWithStatusJSON(httpCode, res.toJSON())
 }
 
-func okResponse(c *gin.Context, data []map[string]interface{}) {
+func okResponse(c *gin.Context, data interface{}) {
 	res := NewSimpleResponse()
 	res.Success = true
 	res.Data = data
@@ -32,13 +39,17 @@ func okResponse(c *gin.Context, data []map[string]interface{}) {
 }
 
 func (r *SimpleResponse) toJSON() map[string]interface{} {
-	return map[string]interface{}{
+	if r.Data == nil {
+		r.Data = []interface{}{}
+	}
+	res := map[string]interface{}{
 		"success": r.Success,
 		"errCode": r.ErrorCode,
 		"errMsg":  r.ErrorMessage,
 		"ver":     r.Ver,
 		"data":    r.Data,
 	}
+	return res
 }
 
 func NewSimpleResponse() *SimpleResponse {

@@ -25,6 +25,7 @@ log:
         3000en: "Cannot get connection to db"
         3001en: "Common db errors"
         3002en: "Error db connection close"
+        3003en: "Bad params for sql update"
 #   server:
         4000en: "Unable to Start the Server"
         4001en: "Server starting..."

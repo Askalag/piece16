@@ -1,7 +1,7 @@
 package model
 
 type Task struct {
-	Id        int64  `db:"id"`
+	Id        int    `db:"id"`
 	Title     string `db:"title"`
 	TreeLevel byte   `db:"tree_level"`
 

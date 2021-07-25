@@ -43,6 +43,8 @@ func NewRootHandler(h *Handler) *gin.Engine {
 			task.GET("/", h.t.GetAllTask)
 			task.GET("/:id", h.t.GetById)
 			task.POST("/", h.t.CreateTask)
+			task.PATCH("/:model", h.t.Update)
+			task.DELETE("/:id", h.t.DeleteById)
 		}
 	}
 	return r

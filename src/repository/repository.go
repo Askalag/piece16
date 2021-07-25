@@ -12,9 +12,11 @@ type Repo struct {
 }
 
 type TaskRepo interface {
-	Create(task model.Task) (int, error)
+	Create(task *model.Task) (int, error)
 	GetById(id int) (*model.Task, error)
 	GetAll() (*[]model.Task, error)
+	Update(m *model.Task) error
+	DeleteById(id int) error
 }
 
 type TaskItemRepo interface {

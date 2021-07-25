@@ -9,11 +9,15 @@ type TaskItemService struct {
 	repo repository.TaskItemRepo
 }
 
-func (s TaskItemService) Create(task model.TaskItem) (int64, error) {
+func (s *TaskItemService) DeleteById(id int) error {
+	return nil
+}
+
+func (s *TaskItemService) Create(task model.TaskItem) (int64, error) {
 	return 0, nil
 }
 
-func (s TaskItemService) GetAll() ([]model.TaskItem, error) {
+func (s *TaskItemService) GetAll() ([]model.TaskItem, error) {
 	return nil, nil
 }
 

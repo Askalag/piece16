@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/model"
 	"github.com/jmoiron/sqlx"
@@ -27,9 +28,9 @@ func (r *TaskPostgres) GetById(id int) (*model.Task, error) {
 	}
 }
 
-func (r *TaskPostgres) Create(obj model.Task) (int, error) {
+func (r *TaskPostgres) Create(m *model.Task) (int, error) {
 	query := "INSERT INTO t1.task(title, tree_level) VALUES($1, $2) RETURNING id"
-	row := r.db.QueryRow(query, obj.Title, obj.TreeLevel)
+	row := r.db.QueryRow(query, m.Title, m.TreeLevel)
 
 	var id int
 	if err := row.Scan(&id); err != nil {
@@ -47,6 +48,26 @@ func (r *TaskPostgres) GetAll() (*[]model.Task, error) {
 		return nil, err
 	}
 	return &arr, nil
+}
+
+func (r *TaskPostgres) Update(m *model.Task) error {
+	if m == nil || m.Id <= 0 {
+		log.WarnWithCode(3003)
+		return errors.New("bad params for update")
+	}
+
+	query := "UPDATE t1.task SET title=$1, tree_level=$2 WHERE id=$3"
+	_, err := r.db.Query(query, m.Title, m.TreeLevel, m.Id)
+	return err
+}
+
+func (r *TaskPostgres) DeleteById(id int) error {
+	query := "DELETE FROM t1.task WHERE id=$1"
+	_, err := r.db.Query(query, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewTaskPostgres(db *sqlx.DB) *TaskPostgres {
