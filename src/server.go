@@ -1,9 +1,10 @@
-package piece16
+package src
 
 import (
 	"context"
 	"fmt"
 	"github.com/Askalag/piece16/src/log"
+	"github.com/Askalag/piece16/src/utils"
 	"github.com/spf13/viper"
 	"net/http"
 	"os"
@@ -48,8 +49,8 @@ func (s *Server) Run(h http.Handler) error {
 func LoadConfig() *Config {
 	config := &Config{
 		Addr: fmt.Sprintf("%s:%s",
-			GetEnv("TREE_SERVER_HOST", ""),
-			GetEnv("TREE_SERVER_PORT", "")),
+			utils.GetEnv("TREE_SERVER_HOST", ""),
+			utils.GetEnv("TREE_SERVER_PORT", "")),
 		IdleTimeout:  viper.GetDuration("server.idleTimeout"),
 		ReadTimeout:  viper.GetDuration("server.readTimeout"),
 		WriteTimeout: viper.GetDuration("server.writeTimeout"),

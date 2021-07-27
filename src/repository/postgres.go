@@ -2,8 +2,8 @@ package repository
 
 import (
 	"fmt"
-	"github.com/Askalag/piece16"
 	"github.com/Askalag/piece16/src/log"
+	"github.com/Askalag/piece16/src/utils"
 	"github.com/spf13/viper"
 )
 import "github.com/jmoiron/sqlx"
@@ -32,11 +32,11 @@ func NewPostgresDB(c *Config) (*sqlx.DB, error) {
 
 func LoadPostgresConfig() *Config {
 	return &Config{
-		Host:     piece16.GetEnv("TREE_POSTGRES_HOST", "localhost"),
-		Port:     piece16.GetEnv("TREE_POSTGRES_PORT", "5432"),
-		Username: piece16.GetEnv("TREE_POSTGRES_USERNAME", ""),
-		Password: piece16.GetEnv("TREE_POSTGRES_PASSWORD", ""),
-		DBName:   piece16.GetEnv("TREE_POSTGRES_DBNAME", ""),
-		SSLMode:  piece16.GetEnv("TREE_POSTGRES_SLLMODE", "disable"),
+		Host:     utils.GetEnv("TREE_POSTGRES_HOST", ""),
+		Port:     utils.GetEnv("TREE_POSTGRES_PORT", ""),
+		Username: utils.GetEnv("TREE_POSTGRES_USERNAME", ""),
+		Password: utils.GetEnv("TREE_POSTGRES_PASSWORD", ""),
+		DBName:   utils.GetEnv("TREE_POSTGRES_DBNAME", ""),
+		SSLMode:  utils.GetEnv("TREE_POSTGRES_SLLMODE", "disable"),
 	}
 }

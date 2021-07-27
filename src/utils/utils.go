@@ -1,4 +1,4 @@
-package piece16
+package utils
 
 import "os"
 

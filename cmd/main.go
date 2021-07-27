@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"github.com/Askalag/piece16"
+	"github.com/Askalag/piece16/src"
 	"github.com/Askalag/piece16/src/handler"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/repository"
@@ -43,8 +43,8 @@ func main() {
 }
 
 func serverStart(h http.Handler, db *sqlx.DB) {
-	cfg := piece16.LoadConfig()
-	srv := piece16.NewServer(cfg)
+	cfg := src.LoadConfig()
+	srv := src.NewServer(cfg)
 
 	log.InfoWithCode(4001)
 	go func() {
