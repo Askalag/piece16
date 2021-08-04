@@ -13,7 +13,6 @@ db:
         sslmode: ""
         driver: "pgx"
 log:
-    level: "Debug"
     codes:
 #   global:
         1000en: "unknown error"
@@ -21,11 +20,14 @@ log:
         2000en: "error loading .env / system environment"
         2001en: "Can't set log level mode, default: [info]"
         2002en: "Can't load environments or .env file"
+        2003en: "Setting log level"
 #   dataBase:
         3000en: "Cannot get connection to db"
         3001en: "Common db errors"
         3002en: "Error db connection close"
         3003en: "Bad params for sql update"
+        3004en: "Error during read sql file (initial_tables sql script)"
+        3005en: "Error during execute sql file (initial_tables sql script)"
 #   server:
         4000en: "Unable to Start the Server"
         4001en: "Server starting..."

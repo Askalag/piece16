@@ -9,7 +9,7 @@ type WelcomeHandler struct {
 }
 
 func (h *WelcomeHandler) Hello(c *gin.Context) {
-	c.JSON(http.StatusOK, "HELLO IM HERE...")
+	c.JSON(http.StatusOK, "Here we go...")
 }
 
 func NewWelcomeHandler() *WelcomeHandler {

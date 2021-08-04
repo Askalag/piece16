@@ -7,6 +7,8 @@ import (
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/repository"
 	"github.com/Askalag/piece16/src/service"
+	"github.com/Askalag/piece16/src/utils"
+	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
@@ -25,6 +27,8 @@ func main() {
 	if ok != nil {
 		log.FatalWithCode(3000, ok.Error())
 	}
+	// initial schema and tables if not exists...
+	repository.CreateTables(postgresDB)
 
 	// repositories...
 	repo := repository.NewTreeRepository(postgresDB)
@@ -32,11 +36,11 @@ func main() {
 	// services...
 	srv := service.NewService(repo)
 
-	// uow unit of work...
+	// uow - unit of work...
 	//uow := src.NewUOW(srv)
 
 	// handler...
-	h := handler.NewRootHandler(handler.MakeHandlers(srv))
+	h := handler.NewEngine(handler.MakeHandlers(srv))
 
 	// server...
 	serverStart(h, postgresDB)
@@ -67,12 +71,26 @@ func loadRootConfig() {
 		logrus.Fatal(err)
 		return
 	}
-	log.InitLogger(viper.GetString("log.level"))
 
 	// .Env
 	if err := godotenv.Load(); err != nil {
 		log.FatalWithCode(2002, err.Error())
 	}
+
+	// setting log level
+	level := utils.GetEnv("TREE_LOG_LEVEL", "")
+	if level != "" {
+		if err := log.InitLogger(level); err != nil {
+			level = "debug"
+			log.WarnWithCode(2001, err)
+			err = log.InitLogger(level)
+		}
+		log.InfoWithCode(2003, "log Level: "+level)
+	}
+
+	// gin mode
+	ginMode := utils.GetEnv("GIN_MODE", "debug")
+	gin.SetMode(ginMode)
 }
 
 func loadConfig() error {

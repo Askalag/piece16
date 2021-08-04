@@ -1,3 +1,5 @@
+create schema if not exists t1;
+
 create table if not exists t1.task (
     id bigserial,
     title varchar(100),

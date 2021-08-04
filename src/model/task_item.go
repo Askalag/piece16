@@ -1,12 +1,12 @@
 package model
 
 type TaskItem struct {
-	id int64
-	Title string
+	Id        int
+	Title     string
 	TreeLevel byte
-	ParentId int
+	ParentId  int
 
-	TimeItems []TimeItem
-	TimeCostTotal float32
+	TimeItems       []TimeItem
+	TimeCostTotal   float32
 	TimeCostAverage float32
 }

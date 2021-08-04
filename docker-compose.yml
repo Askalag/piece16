@@ -2,6 +2,8 @@ version: "3"
 services:
   piece16:
     container_name: piece16_app
+    env_file:
+      - .env
     build: .
     ports:
     - 8088:8088

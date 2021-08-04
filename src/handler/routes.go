@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/Askalag/piece16/src/middleware"
 	"github.com/Askalag/piece16/src/service"
 	"github.com/gin-gonic/gin"
 )
@@ -21,8 +22,11 @@ func MakeHandlers(s *service.Service) *Handler {
 	}
 }
 
-func NewRootHandler(h *Handler) *gin.Engine {
+func NewEngine(h *Handler) *gin.Engine {
 	r := gin.New()
+
+	// middleware
+	r.Use(middleware.LogToConsole())
 
 	// Auth
 	//aApi := r.Group("/auth")

@@ -9,16 +9,37 @@ type TaskItemService struct {
 	repo repository.TaskItemRepo
 }
 
-func (s *TaskItemService) DeleteById(id int) error {
+func (s *TaskItemService) Create(m *model.TaskItem) (int, error) {
+	return s.Create(m)
+}
+
+func (s *TaskItemService) GetById(id int) (*model.TaskItem, error) {
+	return s.GetById(id)
+}
+
+func (s *TaskItemService) GetByParentId(id int) (*model.TaskItem, error) {
+	return s.GetByParentId(id)
+}
+
+func (s *TaskItemService) GetAll() (*[]model.TaskItem, error) {
+	return s.GetAll()
+}
+
+func (s *TaskItemService) Update(m *model.TaskItem) error {
+	return s.Update(m)
+}
+
+func (s *TaskItemService) UpdateParentId(old int, new int) error {
+	// toDo
 	return nil
 }
 
-func (s *TaskItemService) Create(task model.TaskItem) (int64, error) {
-	return 0, nil
+func (s *TaskItemService) DeleteById(id int) error {
+	return s.DeleteById(id)
 }
 
-func (s *TaskItemService) GetAll() ([]model.TaskItem, error) {
-	return nil, nil
+func (s *TaskItemService) DeleteByParentId(id int) error {
+	return s.DeleteByParentId(id)
 }
 
 func NewTaskItemService(r repository.TaskItemRepo) *TaskItemService {
