@@ -1,3 +1,7 @@
+drop schema if exists t1;
+
+drop table if exists t1.tree;
+
 drop table if exists t1.task;
 
 drop table if exists t1.task_item;

@@ -6,9 +6,17 @@ import (
 )
 
 type Repo struct {
+	TR  TreeRepo
 	T   TaskRepo
 	TI  TaskItemRepo
-	TII TaskTimeItemRepo
+	TTI TaskTimeItemRepo
+}
+
+type TreeRepo interface {
+	Create(m *model.Task) (int, error)
+	GetAll() (*[]model.Tree, error)
+	GetById(id int) (*model.Task, error)
+	DeleteById(id int) error
 }
 
 type TaskRepo interface {
@@ -41,8 +49,9 @@ type TaskTimeItemRepo interface {
 
 func NewTreeRepository(db *sqlx.DB) *Repo {
 	return &Repo{
+		TR:  NewTreePostgres(db),
 		T:   NewTaskPostgres(db),
 		TI:  NewTaskItemPostgres(db),
-		TII: NewTimeItemPostgres(db),
+		TTI: NewTimeItemPostgres(db),
 	}
 }

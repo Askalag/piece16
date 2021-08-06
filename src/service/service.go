@@ -5,6 +5,17 @@ import (
 	"github.com/Askalag/piece16/src/repository"
 )
 
+type Tree interface {
+	BuildById(id int) (*model.Tree, error)
+	GetById(id int) (*model.Tree, error)
+	GetAll() (*[]model.Tree, error)
+	DeleteById(id int) error
+	UpdParentTI(ti *model.TaskItem) error
+	UpdParentTTI(tii *model.TimeItem) error
+	DelTI(ti *model.TimeItem) error
+	DelTTI(tti *model.TimeItem) error
+}
+
 type Task interface {
 	Create(task *model.Task) (int, error)
 	GetAll() (*[]model.Task, error)
@@ -36,6 +47,7 @@ type TaskTimeItem interface {
 }
 
 type Service struct {
+	TreeService         Tree
 	TaskService         Task
 	TaskItemService     TaskItem
 	TaskTimeItemService TaskTimeItem
@@ -43,8 +55,9 @@ type Service struct {
 
 func NewService(r *repository.Repo) *Service {
 	return &Service{
+		TreeService:         NewTreeService(r),
 		TaskService:         NewTaskService(r.T),
 		TaskItemService:     NewTaskItemService(r.TI),
-		TaskTimeItemService: NewTaskTimeItemService(r.TII),
+		TaskTimeItemService: NewTaskTimeItemService(r.TTI),
 	}
 }
