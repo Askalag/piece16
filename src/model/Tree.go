@@ -1,6 +1,7 @@
 package model
 
 type Tree struct {
-	task  Task
-	title string
+	Id    int
+	Title string
+	Tasks []Task
 }
