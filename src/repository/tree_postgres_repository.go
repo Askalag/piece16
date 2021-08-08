@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/model"
 	"github.com/jmoiron/sqlx"
@@ -32,12 +33,29 @@ func (r TreePostgres) GetAll() (*[]model.Tree, error) {
 	return &arr, nil
 }
 
-func (r TreePostgres) GetById(id int) (*model.Task, error) {
-	panic("implement me")
+func (r TreePostgres) GetById(id int) (*model.Tree, error) {
+	var task model.Tree
+	query := "SELECT * FROM t1.tree WHERE id=$1"
+
+	err := r.db.Get(&task, query, id)
+
+	switch {
+	case err == sql.ErrNoRows:
+		return nil, nil
+	case err != nil:
+		return &task, err
+	default:
+		return &task, nil
+	}
 }
 
 func (r TreePostgres) DeleteById(id int) error {
-	panic("implement me")
+	query := "DELETE FROM t1.tree WHERE id=$1"
+	_, err := r.db.Query(query, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewTreePostgres(db *sqlx.DB) *TreePostgres {

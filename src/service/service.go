@@ -10,6 +10,7 @@ type Tree interface {
 	GetById(id int) (*model.Tree, error)
 	GetAll() (*[]model.Tree, error)
 	DeleteById(id int) error
+	DeleteFullTree(id *model.Tree) error
 	UpdParentTI(ti *model.TaskItem) error
 	UpdParentTTI(tii *model.TimeItem) error
 	DelTI(ti *model.TimeItem) error
@@ -22,16 +23,20 @@ type Task interface {
 	GetById(id int) (*model.Task, error)
 	Update(m *model.Task) error
 	DeleteById(id int) error
+	DeleteByIds(ids []int) error
+	DeleteByTreeId(id int) error
 }
 
 type TaskItem interface {
 	Create(task *model.TaskItem) (int, error)
 	GetAll() (*[]model.TaskItem, error)
 	GetById(id int) (*model.TaskItem, error)
-	GetByParentId(id int) (*model.TaskItem, error)
+	GetByParentId(id int) (*[]model.TaskItem, error)
+	GetByParentIds(id []int) (*[]model.TaskItem, error)
 	Update(m *model.TaskItem) error
 	UpdateParentId(old int, new int) error
 	DeleteById(id int) error
+	DeleteByIds(ids []int) error
 	DeleteByParentId(id int) error
 }
 
@@ -43,6 +48,7 @@ type TaskTimeItem interface {
 	Update(m *model.TimeItem) error
 	UpdateParentId(old int, new int) error
 	DeleteById(id int) error
+	DeleteByIds(ids []int) error
 	DeleteByParentId(id int) error
 }
 

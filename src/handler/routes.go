@@ -8,6 +8,7 @@ import (
 
 type Handler struct {
 	w   *WelcomeHandler
+	tr  *TreeHandler
 	t   *TaskHandler
 	ti  *TaskItemHandler
 	tti *TaskTimeItemHandler
@@ -16,6 +17,7 @@ type Handler struct {
 func MakeHandlers(s *service.Service) *Handler {
 	return &Handler{
 		w:   NewWelcomeHandler(),
+		tr:  NewTreeHandler(s.TreeService),
 		t:   NewTaskHandler(s.TaskService),
 		ti:  NewTaskItemHandler(s.TaskItemService),
 		tti: nil,
@@ -39,6 +41,17 @@ func NewEngine(h *Handler) *gin.Engine {
 		{
 			wlc.GET("/h", h.w.Hello)
 			//wlc.GET("/t", h.w.Test)
+		}
+
+		// Tree group
+		tree := tApi.Group("/tree")
+		{
+			tree.GET("/build/:id", h.tr.BuildById)
+			//tree.GET("/", h.t.GetAllTask)
+			//tree.GET("/:id", h.t.GetById)
+			//tree.POST("/", h.t.CreateTask)
+			//tree.PATCH("/:model", h.t.Update)
+			//tree.DELETE("/:id", h.t.DeleteById)
 		}
 
 		// Task group

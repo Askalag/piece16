@@ -9,6 +9,10 @@ type TaskTimeItemService struct {
 	repo repository.TaskTimeItemRepo
 }
 
+func (s *TaskTimeItemService) DeleteByIds(ids []int) error {
+	return s.repo.DeleteByIds(ids)
+}
+
 func (s *TaskTimeItemService) Create(m *model.TimeItem) (int, error) {
 	return s.repo.Create(m)
 }
@@ -39,7 +43,8 @@ func (s *TaskTimeItemService) DeleteById(id int) error {
 }
 
 func (s *TaskTimeItemService) DeleteByParentId(id int) error {
-	return s.repo.DeleteByParentId(id)
+	// toDo
+	return nil
 }
 
 func NewTaskTimeItemService(r repository.TaskTimeItemRepo) *TaskTimeItemService {

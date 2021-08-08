@@ -26,9 +26,7 @@ func (h *TaskHandler) GetById(c *gin.Context) {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
 		return
 	}
-	okResponse(c, []map[string]interface{}{
-		res.ToJSON(),
-	})
+	okResponse(c, res.ToJSON())
 }
 
 // GetAllTask Get all Tasks...
@@ -37,7 +35,7 @@ func (h *TaskHandler) GetAllTask(c *gin.Context) {
 	if err != nil {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
 	}
-	okResponse(c, model.ToJSONArr(*arr))
+	okResponse(c, model.ToJSONArr(arr))
 }
 
 // CreateTask crate task...
@@ -53,9 +51,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
 		return
 	}
-	okResponse(c, []map[string]interface{}{
-		{"id": id},
-	})
+	okResponse(c, map[string]interface{}{"id": id})
 }
 
 // Update update by model...

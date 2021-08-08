@@ -12,6 +12,52 @@ type TaskItemPostgres struct {
 	db *sqlx.DB
 }
 
+func (r *TaskItemPostgres) GetByParentIds(ids []int) (*[]model.TaskItem, error) {
+	var res []model.TaskItem
+	rawQuery := "SELECT * FROM t1.task_item WHERE parent_id IN (?)"
+	query, args, err := sqlx.In(rawQuery, ids)
+	if err != nil {
+		return &res, err
+	}
+
+	query = r.db.Rebind(query)
+
+	err = r.db.Select(&res, query, args...)
+	return &res, err
+}
+
+func (r *TaskItemPostgres) GetByIds(ids []int) (*[]model.TaskItem, error) {
+	var res []model.TaskItem
+	rawQuery := "SELECT * FROM t1.task_item WHERE id IN (?)"
+	query, args, err := sqlx.In(rawQuery, ids)
+	if err != nil {
+		return &res, err
+	}
+
+	query = r.db.Rebind(query)
+
+	err = r.db.Select(&res, query, args...)
+	return &res, err
+}
+
+func (r *TaskItemPostgres) DeleteByIds(ids []int) error {
+	rawQuery := "DELETE FROM t1.task_item WHERE id IN (?)"
+	query, args, err := sqlx.In(rawQuery, ids)
+	if err != nil {
+		log.WarnWithCode(3001, err.Error())
+		return err
+	}
+
+	query = r.db.Rebind(query)
+
+	_, err = r.db.Query(query, args...)
+	if err != nil {
+		log.WarnWithCode(3001, err.Error())
+		return err
+	}
+	return nil
+}
+
 func (r *TaskItemPostgres) Create(m *model.TaskItem) (int, error) {
 	m.TreeLevel = 1
 	query := "INSERT INTO t1.task_item(title, tree_level, parent_id) VALUES($1, $2, $3) RETURNING id"
@@ -36,35 +82,39 @@ func (r *TaskItemPostgres) GetAll() (*[]model.TaskItem, error) {
 }
 
 func (r *TaskItemPostgres) GetById(id int) (*model.TaskItem, error) {
-	var task model.TaskItem
+	var res model.TaskItem
 	query := "SELECT * FROM t1.task_item WHERE id=$1"
 
-	err := r.db.Get(&task, query, id)
+	err := r.db.Get(&res, query, id)
 
-	switch {
-	case err == sql.ErrNoRows:
-		return nil, nil
-	case err != nil:
-		return nil, err
-	default:
-		return &task, nil
+	if err != nil {
+		log.WarnWithCode(3001, err.Error())
+		switch {
+		case err == sql.ErrNoRows:
+			return nil, nil
+		default:
+			return nil, err
+		}
 	}
+	return &res, nil
 }
 
 func (r *TaskItemPostgres) GetByParentId(parentId int) (*[]model.TaskItem, error) {
-	var task []model.TaskItem
+	var res []model.TaskItem
 	query := "SELECT * FROM t1.task_item WHERE parent_id=$1"
 
-	err := r.db.Get(&task, query, parentId)
+	err := r.db.Get(&res, query, parentId)
 
-	switch {
-	case err == sql.ErrNoRows:
-		return nil, nil
-	case err != nil:
-		return nil, err
-	default:
-		return &task, nil
+	if err != nil {
+		log.WarnWithCode(3001, err.Error())
+		switch {
+		case err == sql.ErrNoRows:
+			return nil, nil
+		default:
+			return nil, err
+		}
 	}
+	return &res, nil
 }
 
 func (r *TaskItemPostgres) Update(m *model.TaskItem) error {

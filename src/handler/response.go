@@ -39,9 +39,6 @@ func okResponse(c *gin.Context, data interface{}) {
 }
 
 func (r *SimpleResponse) toJSON() map[string]interface{} {
-	if r.Data == nil {
-		r.Data = []interface{}{}
-	}
 	res := map[string]interface{}{
 		"success": r.Success,
 		"errCode": r.ErrorCode,

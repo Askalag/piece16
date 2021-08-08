@@ -9,6 +9,14 @@ type TaskService struct {
 	repo repository.TaskRepo
 }
 
+func (s *TaskService) DeleteByIds(ids []int) error {
+	return s.repo.DeleteByIds(ids)
+}
+
+func (s *TaskService) DeleteByTreeId(id int) error {
+	return s.repo.DeleteByTreeId(id)
+}
+
 func (s *TaskService) DeleteById(id int) error {
 	return s.repo.DeleteById(id)
 }
