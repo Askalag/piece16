@@ -12,6 +12,7 @@ type TreeService struct {
 	tTIRepo repository.TaskTimeItemRepo
 }
 
+// DeleteFullTree delete Tree include inner elements if exists.
 func (t TreeService) DeleteFullTree(tree *model.Tree) error {
 	ids := obtainTreeElemIds(tree)
 	var err error = nil
@@ -33,6 +34,7 @@ func (t TreeService) DeleteFullTree(tree *model.Tree) error {
 	return err
 }
 
+// BuildById Build a new Tree by id if exists with inner elements.
 func (t TreeService) BuildById(id int) (*model.Tree, error) {
 	var res model.Tree
 	var tasks []model.Task
@@ -67,7 +69,7 @@ func (t TreeService) BuildById(id int) (*model.Tree, error) {
 			if len(*taskItems) > 0 {
 				var taskItemIds []int
 				for _, item := range *taskItems {
-					taskIds = append(taskItemIds, item.Id)
+					taskItemIds = append(taskItemIds, item.Id)
 				}
 
 				timeItems, err := t.tTIRepo.GetByParentIds(taskItemIds)
@@ -77,7 +79,7 @@ func (t TreeService) BuildById(id int) (*model.Tree, error) {
 				times = *timeItems
 			}
 		}
-		fillTree(tree, &tasks, &items, &times)
+		res = fillTree(*tree, tasks, items, times)
 		return &res, err
 	}
 	return nil, err
@@ -111,27 +113,41 @@ func (t TreeService) DelTTI(tti *model.TimeItem) error {
 	panic("implement me")
 }
 
-func fillTree(tree *model.Tree, tasks *[]model.Task, taskItems *[]model.TaskItem, times *[]model.TimeItem) *model.Tree {
+func calcCostTaskItem(taskItem model.TaskItem, items []model.TimeItem) *model.TaskItem {
 
+	for _, e := range items {
+		taskItem.TimeCostTotal += e.TimeCost
+		taskItem.TimeCostAverage++
+	}
+
+	if taskItem.TimeCostAverage != 0 {
+		taskItem.TimeCostAverage = taskItem.TimeCostTotal / taskItem.TimeCostAverage
+	}
+	return &taskItem
+}
+
+// filling full tree include inner elements.
+func fillTree(tree model.Tree, tasks []model.Task, taskItems []model.TaskItem, times []model.TimeItem) model.Tree {
 	// filling times to taskItems
-	for _, e := range *taskItems {
-		for _, e2 := range *times {
+	for i, e := range taskItems {
+		for _, e2 := range times {
 			if e.Id == e2.ParentId {
-				e.TimeItems = append(e.TimeItems, e2)
+				taskItems[i].TimeItems = append(taskItems[i].TimeItems, e2)
 			}
 		}
+		taskItems[i] = *calcCostTaskItem(taskItems[i], taskItems[i].TimeItems)
 	}
 
 	// filling taskItems to tasks
-	for _, e := range *tasks {
-		for _, e2 := range *taskItems {
+	for i, e := range tasks {
+		for _, e2 := range taskItems {
 			if e.Id == e2.ParentId {
-				e.TaskItems = append(e.TaskItems, e2)
+				tasks[i].TaskItems = append(tasks[i].TaskItems, e2)
 			}
 		}
 	}
 
-	tree.Tasks = *tasks
+	tree.Tasks = tasks
 	return tree
 }
 

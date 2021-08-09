@@ -23,7 +23,7 @@ func (h *TreeHandler) BuildById(c *gin.Context) {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
 		return
 	}
-	okResponse(c, res.ToJSON())
+	okResponse(c, res)
 }
 
 func NewTreeHandler(s service.Tree) *TreeHandler {

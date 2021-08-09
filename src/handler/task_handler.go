@@ -26,16 +26,16 @@ func (h *TaskHandler) GetById(c *gin.Context) {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
 		return
 	}
-	okResponse(c, res.ToJSON())
+	okResponse(c, res)
 }
 
 // GetAllTask Get all Tasks...
 func (h *TaskHandler) GetAllTask(c *gin.Context) {
-	arr, err := h.s.GetAll()
+	res, err := h.s.GetAll()
 	if err != nil {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
 	}
-	okResponse(c, model.ToJSONArr(arr))
+	okResponse(c, res)
 }
 
 // CreateTask crate task...

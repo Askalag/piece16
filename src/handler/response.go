@@ -40,11 +40,11 @@ func okResponse(c *gin.Context, data interface{}) {
 
 func (r *SimpleResponse) toJSON() map[string]interface{} {
 	res := map[string]interface{}{
-		"success": r.Success,
-		"errCode": r.ErrorCode,
-		"errMsg":  r.ErrorMessage,
-		"ver":     r.Ver,
-		"data":    r.Data,
+		"success":      r.Success,
+		"err_code":     r.ErrorCode,
+		"err_msg":      r.ErrorMessage,
+		"response_ver": r.Ver,
+		"data":         r.Data,
 	}
 	return res
 }
