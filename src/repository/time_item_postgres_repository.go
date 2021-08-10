@@ -57,7 +57,7 @@ func (r *TimeItemPostgres) DeleteByIds(ids []int) error {
 }
 
 func (r *TimeItemPostgres) Create(m *model.TimeItem) (int, error) {
-	m.TreeLevel = 2
+	m.TreeLevel = 3
 	query := "INSERT INTO t1.time_item(title, description, time_cost, tree_level, parent_id) VALUES($1, $2, $3, $4, $5) RETURNING id"
 	row := r.db.QueryRow(query, m.Title, m.Description, m.TimeCost, m.TreeLevel, m.ParentId)
 
@@ -120,7 +120,7 @@ func (r *TimeItemPostgres) Update(m *model.TimeItem) error {
 		log.WarnWithCode(3003)
 		return errors.New("bad params for update")
 	}
-
+	m.TreeLevel = 3
 	query := "UPDATE t1.task_item SET title=$1, parent_id=$2 WHERE id=$3"
 	_, err := r.db.Query(query, m.Title, m.ParentId, m.Id)
 	return err

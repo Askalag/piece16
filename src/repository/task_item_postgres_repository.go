@@ -59,7 +59,7 @@ func (r *TaskItemPostgres) DeleteByIds(ids []int) error {
 }
 
 func (r *TaskItemPostgres) Create(m *model.TaskItem) (int, error) {
-	m.TreeLevel = 1
+	m.TreeLevel = 2
 	query := "INSERT INTO t1.task_item(title, tree_level, parent_id) VALUES($1, $2, $3) RETURNING id"
 	row := r.db.QueryRow(query, m.Title, m.TreeLevel, m.ParentId)
 
@@ -122,7 +122,7 @@ func (r *TaskItemPostgres) Update(m *model.TaskItem) error {
 		log.WarnWithCode(3003)
 		return errors.New("bad params for update")
 	}
-
+	m.TreeLevel = 2
 	query := "UPDATE t1.task_item SET title=$1, parent_id=$2 WHERE id=$3"
 	_, err := r.db.Query(query, m.Title, m.ParentId, m.Id)
 	return err

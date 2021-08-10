@@ -12,6 +12,7 @@ type TreePostgres struct {
 }
 
 func (r TreePostgres) Create(m *model.Tree) (int, error) {
+	m.TreeLevel = 0
 	query := "INSERT INTO t1.tree(title) VALUES($1) RETURNING id"
 	row := r.db.QueryRow(query, m.Title)
 

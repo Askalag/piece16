@@ -11,10 +11,10 @@ type Tree interface {
 	GetAll() (*[]model.Tree, error)
 	DeleteById(id int) error
 	DeleteFullTree(id *model.Tree) error
-	UpdParentTI(ti *model.TaskItem) error
-	UpdParentTTI(tii *model.TimeItem) error
-	DelTI(ti *model.TimeItem) error
-	DelTTI(tti *model.TimeItem) error
+	UpdTI(treeId int, ti *model.TaskItem) (*model.Tree, error)
+	UpdTTI(treeId int, tii *model.TimeItem) (*model.Tree, error)
+	DelTI(treeId int, tiId int, deep bool) (*model.Tree, error)
+	DelTTI(treeId int, ttiId int, deep bool) (*model.Tree, error)
 }
 
 type Task interface {

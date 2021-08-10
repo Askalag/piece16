@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/Askalag/piece16/src/model"
 	"github.com/Askalag/piece16/src/repository"
+	"sync"
 )
 
 type TreeService struct {
@@ -79,76 +80,58 @@ func (t TreeService) BuildById(id int) (*model.Tree, error) {
 				times = *timeItems
 			}
 		}
-		res = fillTree(*tree, tasks, items, times)
+		res = fillAndCalcTree(*tree, tasks, items, times)
 		return &res, err
+
 	}
 	return nil, err
 }
 
+// GetById receive model.Tree by Id
 func (t TreeService) GetById(id int) (*model.Tree, error) {
 	return t.trRepo.GetById(id)
 }
 
+// GetAll receive a list of model.Tree
 func (t TreeService) GetAll() (*[]model.Tree, error) {
 	return t.trRepo.GetAll()
 }
 
+// DeleteById delete model.Tree by Id
 func (t TreeService) DeleteById(id int) error {
 	return t.trRepo.DeleteById(id)
 }
 
-func (t TreeService) UpdParentTI(ti *model.TaskItem) error {
-	panic("implement me")
-}
-
-func (t TreeService) UpdParentTTI(tii *model.TimeItem) error {
-	panic("implement me")
-}
-
-func (t TreeService) DelTI(ti *model.TimeItem) error {
-	panic("implement me")
-}
-
-func (t TreeService) DelTTI(tti *model.TimeItem) error {
-	panic("implement me")
-}
-
-func calcCostTaskItem(taskItem model.TaskItem, items []model.TimeItem) *model.TaskItem {
-
-	for _, e := range items {
-		taskItem.TimeCostTotal += e.TimeCost
-		taskItem.TimeCostAverage++
+// UpdTI update model.TaskItem and rebuild tree
+func (t TreeService) UpdTI(treeId int, ti *model.TaskItem) (*model.Tree, error) {
+	if err := t.tIRepo.Update(ti); err != nil {
+		return nil, err
 	}
-
-	if taskItem.TimeCostAverage != 0 {
-		taskItem.TimeCostAverage = taskItem.TimeCostTotal / taskItem.TimeCostAverage
-	}
-	return &taskItem
+	return t.BuildById(treeId)
 }
 
-// filling full tree include inner elements.
-func fillTree(tree model.Tree, tasks []model.Task, taskItems []model.TaskItem, times []model.TimeItem) model.Tree {
-	// filling times to taskItems
-	for i, e := range taskItems {
-		for _, e2 := range times {
-			if e.Id == e2.ParentId {
-				taskItems[i].TimeItems = append(taskItems[i].TimeItems, e2)
-			}
-		}
-		taskItems[i] = *calcCostTaskItem(taskItems[i], taskItems[i].TimeItems)
+// UpdTTI update model.TimeItem and rebuild tree
+func (t TreeService) UpdTTI(treeId int, tii *model.TimeItem) (*model.Tree, error) {
+	if err := t.tTIRepo.Update(tii); err != nil {
+		return nil, err
 	}
+	return t.BuildById(treeId)
+}
 
-	// filling taskItems to tasks
-	for i, e := range tasks {
-		for _, e2 := range taskItems {
-			if e.Id == e2.ParentId {
-				tasks[i].TaskItems = append(tasks[i].TaskItems, e2)
-			}
-		}
+// DelTI delete model.TaskItem and rebuild tree
+func (t TreeService) DelTI(treeId int, tiId int, deep bool) (*model.Tree, error) {
+	if err := t.tIRepo.DeleteById(tiId); err != nil {
+		return nil, err
 	}
+	return t.BuildById(treeId)
+}
 
-	tree.Tasks = tasks
-	return tree
+// DelTTI delete model.TimeItem and rebuild tree
+func (t TreeService) DelTTI(treeId int, ttiId int, deep bool) (*model.Tree, error) {
+	if err := t.tTIRepo.DeleteById(ttiId); err != nil {
+		return nil, err
+	}
+	return t.BuildById(treeId)
 }
 
 func obtainTreeElemIds(tree *model.Tree) *TreeElemIds {
@@ -183,6 +166,74 @@ func obtainTreeElemIds(tree *model.Tree) *TreeElemIds {
 		}
 	}
 	return ids
+}
+
+// calcTask calculate model.Task TimeCostAverage and TimeCostTotal
+func calcTask(chCalc chan model.Task, t model.Task, items []model.TaskItem) {
+	for _, e := range items {
+		t.TimeCostTotal += e.TimeCostTotal
+		t.TimeCostAverage++
+	}
+	if t.TimeCostAverage != 0 {
+		t.TimeCostAverage = t.TimeCostTotal / t.TimeCostAverage
+	}
+	chCalc <- t
+}
+
+// calcTaskItem calculate model.TaskItem TimeCostAverage and TimeCostTotal
+func calcTaskItem(chCalc chan model.TaskItem, ti model.TaskItem, timeItems []model.TimeItem) {
+	for _, e := range timeItems {
+		ti.TimeCostTotal += e.TimeCost
+		ti.TimeCostAverage++
+	}
+	if ti.TimeCostAverage > 0 {
+		ti.TimeCostAverage = ti.TimeCostTotal / ti.TimeCostAverage
+	}
+	chCalc <- ti
+}
+
+// fillTree filling full tree include inner elements.
+func fillAndCalcTree(tree model.Tree, tasks []model.Task, taskItems []model.TaskItem, times []model.TimeItem) model.Tree {
+	var wg sync.WaitGroup
+	chTICalc := make(chan model.TaskItem)
+	chTCalc := make(chan model.Task)
+
+	// filling times to taskItems
+	go func() {
+		wg.Add(1)
+		for i, e := range taskItems {
+			for _, e2 := range times {
+				if e.Id == e2.ParentId {
+					taskItems[i].TimeItems = append(taskItems[i].TimeItems, e2)
+				}
+			}
+			go calcTaskItem(chTICalc, taskItems[i], taskItems[i].TimeItems)
+			taskItems[i] = <-chTICalc
+		}
+		wg.Done()
+	}()
+
+	wg.Wait()
+
+	// filling taskItems to tasks
+	go func() {
+		wg.Add(1)
+		for i, e := range tasks {
+			for _, e2 := range taskItems {
+				if e.Id == e2.ParentId {
+					tasks[i].TaskItems = append(tasks[i].TaskItems, e2)
+				}
+			}
+			go calcTask(chTCalc, tasks[i], tasks[i].TaskItems)
+			tasks[i] = <-chTCalc
+		}
+		wg.Done()
+	}()
+
+	wg.Wait()
+
+	tree.Tasks = tasks
+	return tree
 }
 
 type TreeElemIds struct {

@@ -80,7 +80,7 @@ func (r *TaskPostgres) GetById(id int) (*model.Task, error) {
 }
 
 func (r *TaskPostgres) Create(m *model.Task) (int, error) {
-	m.TreeLevel = 0
+	m.TreeLevel = 1
 	query := "INSERT INTO t1.task(title, tree_level) VALUES($1, $2) RETURNING id"
 	row := r.db.QueryRow(query, m.Title, m.TreeLevel)
 
@@ -107,7 +107,7 @@ func (r *TaskPostgres) Update(m *model.Task) error {
 		log.WarnWithCode(3003)
 		return errors.New("bad params for update")
 	}
-
+	m.TreeLevel = 1
 	query := "UPDATE t1.task SET title=$1 WHERE id=$2"
 	_, err := r.db.Query(query, m.Title, m.Id)
 	return err
