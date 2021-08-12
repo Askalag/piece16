@@ -121,8 +121,8 @@ func (r *TimeItemPostgres) Update(m *model.TimeItem) error {
 		return errors.New("bad params for update")
 	}
 	m.TreeLevel = 3
-	query := "UPDATE t1.task_item SET title=$1, parent_id=$2 WHERE id=$3"
-	_, err := r.db.Query(query, m.Title, m.ParentId, m.Id)
+	query := "UPDATE t1.time_item SET title=$1, parent_id=$2, description=$3, time_cost=$4 WHERE id=$5"
+	_, err := r.db.Query(query, m.Title, m.ParentId, m.Description, m.TimeCost, m.Id)
 	return err
 }
 

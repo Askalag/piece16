@@ -50,8 +50,8 @@ func NewEngine(h *Handler) *gin.Engine {
 			//tree.GET("/", h.t.GetAllTask)
 			//tree.GET("/:id", h.t.GetById)
 			//tree.POST("/", h.t.CreateTask)
-			//tree.PATCH("/:model", h.t.Update)
-			tree.DELETE("/:id/taskItem/:tiId", h.tr.DeleteTIById)
+			tree.PATCH("/:treeId/timeItem", h.tr.UpdateTTI)
+			tree.DELETE("/:treeId/taskItem/:tiId", h.tr.DeleteTIById)
 		}
 
 		// Task group

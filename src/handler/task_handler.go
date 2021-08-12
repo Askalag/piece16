@@ -18,7 +18,7 @@ type TaskHandler struct {
 func (h *TaskHandler) GetById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		errorResponse(http.StatusBadRequest, c, 0, "")
+		errorResponse(http.StatusBadRequest, c, 4404, "")
 		return
 	}
 	res, err := h.s.GetById(id)
@@ -42,7 +42,7 @@ func (h *TaskHandler) GetAllTask(c *gin.Context) {
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var body *model.Task
 	if err := c.BindJSON(&body); err != nil {
-		errorResponse(http.StatusBadRequest, c, 0, "")
+		errorResponse(http.StatusBadRequest, c, 4004, "")
 		return
 	}
 
@@ -58,7 +58,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 func (h *TaskHandler) Update(c *gin.Context) {
 	m, err := getTaskModelAndValidate(c)
 	if err != nil {
-		errorResponse(http.StatusBadRequest, c, 0, err.Error())
+		errorResponse(http.StatusBadRequest, c, 4004, err.Error())
 		return
 	}
 
@@ -73,7 +73,7 @@ func (h *TaskHandler) Update(c *gin.Context) {
 func (h *TaskHandler) DeleteById(c *gin.Context) {
 	paramId, err := getIdParamAndValidate(c)
 	if err != nil {
-		errorResponse(http.StatusBadRequest, c, 0, err.Error())
+		errorResponse(http.StatusBadRequest, c, 4004, err.Error())
 		return
 	}
 

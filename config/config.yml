@@ -33,3 +33,4 @@ log:
         4001en: "Server starting..."
         4002en: "Listen and serve..."
         4003en: "Received terminate, server shutting down..."
+        4004en: "BadParams"
