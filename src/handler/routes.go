@@ -20,7 +20,7 @@ func MakeHandlers(s *service.Service) *Handler {
 		tr:  NewTreeHandler(s.TreeService),
 		t:   NewTaskHandler(s.TaskService),
 		ti:  NewTaskItemHandler(s.TaskItemService),
-		tti: nil,
+		tti: NewTaskTimeItemHandler(s.TaskTimeItemService),
 	}
 }
 
@@ -30,38 +30,59 @@ func NewEngine(h *Handler) *gin.Engine {
 	// middleware
 	r.Use(middleware.LogToConsole())
 
-	// Auth
-	//aApi := r.Group("/auth")
-
-	// Tree Rest Api
-	tApi := r.Group("/api")
+	// Rest Api group
+	restApi := r.Group("/api")
 	{
 		// Welcome group
-		wlc := tApi.Group("/wlc")
+		wlc := restApi.Group("/wlc")
 		{
 			wlc.GET("/h", h.w.Hello)
-			//wlc.GET("/t", h.w.Test)
 		}
 
 		// Tree group
-		tree := tApi.Group("/tree")
+		tree := restApi.Group("/tree")
 		{
+			tree.GET("/", h.tr.GetAll)
 			tree.GET("/build/:id", h.tr.BuildById)
-			//tree.GET("/", h.t.GetAllTask)
-			//tree.GET("/:id", h.t.GetById)
-			//tree.POST("/", h.t.CreateTask)
+			tree.DELETE("/:treeId", h.tr.DeleteById)
+			tree.POST("/", h.tr.Create)
+			tree.PATCH("/", h.tr.Update)
+
+			tree.DELETE("/wipe/:id", h.tr.WipeFullTree)
+
+			tree.PATCH("/:treeId/task", h.tr.UpdateT)
+			tree.PATCH("/:treeId/taskItem", h.tr.UpdateTI)
 			tree.PATCH("/:treeId/timeItem", h.tr.UpdateTTI)
-			tree.DELETE("/:treeId/taskItem/:tiId", h.tr.DeleteTIById)
 		}
 
 		// Task group
-		task := tApi.Group("/task")
+		task := restApi.Group("/task")
 		{
-			task.GET("/", h.t.GetAllTask)
+			task.GET("/", h.t.GetAll)
 			task.GET("/:id", h.t.GetById)
 			task.POST("/", h.t.CreateTask)
-			task.PATCH("/:model", h.t.Update)
+			task.PATCH("/", h.t.Update)
 			task.DELETE("/:id", h.t.DeleteById)
+		}
+
+		// TaskItem group
+		taskItem := restApi.Group("/taskItem")
+		{
+			taskItem.GET("/", h.ti.GetAll)
+			taskItem.GET("/:id", h.ti.GetById)
+			taskItem.POST("/", h.ti.Create)
+			taskItem.PATCH("/", h.ti.Update)
+			taskItem.DELETE("/:id", h.ti.DeleteById)
+		}
+
+		// TaskTimeItem group
+		taskTimeItem := restApi.Group("/taskTimeItem")
+		{
+			taskTimeItem.GET("/", h.tti.GetAll)
+			taskTimeItem.GET("/:id", h.tti.GetById)
+			taskTimeItem.POST("/", h.tti.Create)
+			taskTimeItem.PATCH("/", h.tti.Update)
+			taskTimeItem.DELETE("/:id", h.tti.DeleteById)
 		}
 	}
 	return r

@@ -18,23 +18,23 @@ func (s *TaskItemService) DeleteByIds(ids []int) error {
 }
 
 func (s *TaskItemService) Create(m *model.TaskItem) (int, error) {
-	return s.Create(m)
+	return s.repo.Create(m)
 }
 
 func (s *TaskItemService) GetById(id int) (*model.TaskItem, error) {
-	return s.GetById(id)
+	return s.repo.GetById(id)
 }
 
 func (s *TaskItemService) GetByParentId(id int) (*[]model.TaskItem, error) {
-	return s.GetByParentId(id)
+	return s.repo.GetByParentId(id)
 }
 
 func (s *TaskItemService) GetAll() (*[]model.TaskItem, error) {
-	return s.GetAll()
+	return s.repo.GetAll()
 }
 
 func (s *TaskItemService) Update(m *model.TaskItem) error {
-	return s.Update(m)
+	return s.repo.Update(m)
 }
 
 func (s *TaskItemService) UpdateParentId(old int, new int) error {
@@ -43,11 +43,11 @@ func (s *TaskItemService) UpdateParentId(old int, new int) error {
 }
 
 func (s *TaskItemService) DeleteById(id int) error {
-	return s.DeleteById(id)
+	return s.repo.DeleteById(id)
 }
 
 func (s *TaskItemService) DeleteByParentId(id int) error {
-	return s.DeleteByParentId(id)
+	return s.repo.DeleteByParentId(id)
 }
 
 func NewTaskItemService(r repository.TaskItemRepo) *TaskItemService {

@@ -6,11 +6,14 @@ import (
 )
 
 type Tree interface {
+	Create(body *model.Tree) (int, error)
+	Update(m *model.Tree) error
 	BuildById(id int) (*model.Tree, error)
 	GetById(id int) (*model.Tree, error)
 	GetAll() (*[]model.Tree, error)
 	DeleteById(id int) error
 	DeleteFullTree(id *model.Tree) error
+	UpdT(treeId int, task *model.Task) (*model.Tree, error)
 	UpdTI(treeId int, ti *model.TaskItem) (*model.Tree, error)
 	UpdTTI(treeId int, tii *model.TimeItem) (*model.Tree, error)
 	DelTI(treeId int, tiId int, deep bool) (*model.Tree, error)

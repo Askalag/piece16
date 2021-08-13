@@ -81,8 +81,8 @@ func (r *TaskPostgres) GetById(id int) (*model.Task, error) {
 
 func (r *TaskPostgres) Create(m *model.Task) (int, error) {
 	m.TreeLevel = 1
-	query := "INSERT INTO t1.task(title, tree_level) VALUES($1, $2) RETURNING id"
-	row := r.db.QueryRow(query, m.Title, m.TreeLevel)
+	query := "INSERT INTO t1.task(title, tree_level, tree_id) VALUES($1, $2, $3) RETURNING id"
+	row := r.db.QueryRow(query, m.Title, m.TreeLevel, m.TreeId)
 
 	var id int
 	if err := row.Scan(&id); err != nil {

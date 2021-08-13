@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/model"
 	"github.com/jmoiron/sqlx"
@@ -9,6 +10,17 @@ import (
 
 type TreePostgres struct {
 	db *sqlx.DB
+}
+
+func (r TreePostgres) Update(m *model.Tree) error {
+	if m == nil || m.Id <= 0 {
+		log.WarnWithCode(3003)
+		return errors.New("bad params for update")
+	}
+	m.TreeLevel = 2
+	query := "UPDATE t1.tree SET title=$1 WHERE id=$2"
+	_, err := r.db.Query(query, m.Title, m.Id)
+	return err
 }
 
 func (r TreePostgres) Create(m *model.Tree) (int, error) {

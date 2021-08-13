@@ -14,11 +14,11 @@ type TaskHandler struct {
 	s service.Task
 }
 
-// GetById Get Task by Id...
+// GetById Get Task by Id
 func (h *TaskHandler) GetById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		errorResponse(http.StatusBadRequest, c, 4404, "")
+		errorResponse(http.StatusBadRequest, c, 4004, err.Error())
 		return
 	}
 	res, err := h.s.GetById(id)
@@ -29,8 +29,8 @@ func (h *TaskHandler) GetById(c *gin.Context) {
 	okResponse(c, res)
 }
 
-// GetAllTask Get all Tasks...
-func (h *TaskHandler) GetAllTask(c *gin.Context) {
+// GetAll Get all Tasks
+func (h *TaskHandler) GetAll(c *gin.Context) {
 	res, err := h.s.GetAll()
 	if err != nil {
 		errorResponse(http.StatusInternalServerError, c, 0, err.Error())
@@ -38,7 +38,7 @@ func (h *TaskHandler) GetAllTask(c *gin.Context) {
 	okResponse(c, res)
 }
 
-// CreateTask crate task...
+// CreateTask crate task
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var body *model.Task
 	if err := c.BindJSON(&body); err != nil {
@@ -54,7 +54,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	okResponse(c, map[string]interface{}{"id": id})
 }
 
-// Update update by model...
+// Update update by model
 func (h *TaskHandler) Update(c *gin.Context) {
 	m, err := getTaskModelAndValidate(c)
 	if err != nil {
@@ -69,7 +69,7 @@ func (h *TaskHandler) Update(c *gin.Context) {
 	okResponse(c, nil)
 }
 
-// DeleteById delete task by id...
+// DeleteById delete task by id
 func (h *TaskHandler) DeleteById(c *gin.Context) {
 	paramId, err := getIdParamAndValidate(c)
 	if err != nil {
@@ -89,7 +89,7 @@ func getTaskModelAndValidate(c *gin.Context) (*model.Task, error) {
 	if err := c.BindJSON(&input); err != nil {
 		return nil, err
 	}
-	if !validator.ValidTaskModel(input) {
+	if !validator.ValidateTask(input) {
 		return nil, errors.New("bad model properties")
 	}
 	return &input, nil

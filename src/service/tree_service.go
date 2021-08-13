@@ -13,7 +13,25 @@ type TreeService struct {
 	tTIRepo repository.TaskTimeItemRepo
 }
 
-// DeleteFullTree delete Tree include inner elements if exists.
+// UpdT update model.Task and return full model.Tree
+func (t TreeService) UpdT(treeId int, task *model.Task) (*model.Tree, error) {
+	if err := t.tRepo.Update(task); err != nil {
+		return nil, err
+	}
+	return t.BuildById(treeId)
+}
+
+// Update update model.Tree
+func (t TreeService) Update(m *model.Tree) error {
+	return t.trRepo.Update(m)
+}
+
+// Create create a new model.Tree, return id
+func (t TreeService) Create(body *model.Tree) (int, error) {
+	return t.trRepo.Create(body)
+}
+
+// DeleteFullTree delete model.Tree include inner elements if exists.
 func (t TreeService) DeleteFullTree(tree *model.Tree) error {
 	ids := obtainTreeElemIds(tree)
 	var err error = nil
@@ -35,7 +53,7 @@ func (t TreeService) DeleteFullTree(tree *model.Tree) error {
 	return err
 }
 
-// BuildById Build a new Tree by id if exists with inner elements.
+// BuildById Build a new model.Tree by id if exists with inner elements.
 func (t TreeService) BuildById(id int) (*model.Tree, error) {
 	var res model.Tree
 	var tasks []model.Task
@@ -192,7 +210,7 @@ func calcTaskItem(chCalc chan model.TaskItem, ti model.TaskItem, timeItems []mod
 	chCalc <- ti
 }
 
-// fillTree filling full tree include inner elements.
+// fillTree filling full model.Tree include inner elements.
 func fillAndCalcTree(tree model.Tree, tasks []model.Task, taskItems []model.TaskItem, times []model.TimeItem) model.Tree {
 	var wg sync.WaitGroup
 	chTICalc := make(chan model.TaskItem)

@@ -41,7 +41,3 @@ func LogToConsole() gin.HandlerFunc {
 
 	}
 }
-
-func LogToFile() gin.HandlerFunc {
-	return nil
-}

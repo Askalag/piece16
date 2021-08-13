@@ -9,6 +9,6 @@ func ValidId(id *int) bool {
 	return true
 }
 
-func ValidTaskModel(task model.Task) bool {
+func ValidateTask(task model.Task) bool {
 	return true
 }

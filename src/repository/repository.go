@@ -13,8 +13,9 @@ type Repo struct {
 }
 
 type TreeRepo interface {
-	Create(m *model.Tree) (int, error)
 	GetAll() (*[]model.Tree, error)
+	Create(m *model.Tree) (int, error)
+	Update(m *model.Tree) error
 	GetById(id int) (*model.Tree, error)
 	DeleteById(id int) error
 }
@@ -41,6 +42,7 @@ type TaskItemRepo interface {
 	Update(m *model.TaskItem) error
 	DeleteById(id int) error
 	DeleteByIds(ids []int) error
+	DeleteByParentId(id int) error
 }
 
 type TaskTimeItemRepo interface {
