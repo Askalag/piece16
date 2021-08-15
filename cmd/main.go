@@ -6,6 +6,7 @@ import (
 	"github.com/Askalag/piece16/src/handler"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/repository"
+	"github.com/Askalag/piece16/src/repository/postgres"
 	"github.com/Askalag/piece16/src/service"
 	"github.com/Askalag/piece16/src/utils"
 	"github.com/gin-gonic/gin"
@@ -22,13 +23,12 @@ func main() {
 	loadRootConfig()
 
 	// postgres...
-	postgresConfig := repository.LoadPostgresConfig()
-	postgresDB, ok := repository.NewPostgresDB(postgresConfig)
+	postgresConfig := postgres.LoadPostgresConfig()
+	postgresDB, ok := postgres.NewPostgresDB(postgresConfig)
 	if ok != nil {
 		log.FatalWithCode(3000, ok.Error())
 	}
 	// initial schema and tables if not exists...
-	repository.CreateTables(postgresDB)
 
 	// repositories...
 	repo := repository.NewTreeRepository(postgresDB)

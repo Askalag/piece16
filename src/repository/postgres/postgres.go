@@ -1,12 +1,10 @@
-package repository
+package postgres
 
 import (
 	"fmt"
 	"github.com/Askalag/piece16/src/log"
 	"github.com/Askalag/piece16/src/utils"
 	"github.com/spf13/viper"
-	"io/ioutil"
-	"path/filepath"
 )
 import "github.com/jmoiron/sqlx"
 
@@ -42,20 +40,5 @@ func LoadPostgresConfig() *Config {
 		Password: utils.GetEnv("TREE_POSTGRES_PASSWORD", ""),
 		DBName:   utils.GetEnv("TREE_POSTGRES_DBNAME", ""),
 		SSLMode:  utils.GetEnv("TREE_POSTGRES_SLLMODE", "disable"),
-	}
-}
-
-// CreateTables create tables if not exists
-func CreateTables(db *sqlx.DB) {
-	path := filepath.Join("src/migration/sql/", "initial_tables.sql")
-	f, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.WarnWithCode(3004, err.Error())
-	}
-
-	sql := string(f)
-	_, err = db.Exec(sql)
-	if err != nil {
-		log.WarnWithCode(3005, err.Error())
 	}
 }

@@ -37,6 +37,7 @@ func (h TaskItemHandler) GetById(c *gin.Context) {
 	okResponse(c, res)
 }
 
+// Create create a new model.TaskItem
 func (h TaskItemHandler) Create(c *gin.Context) {
 	var body *model.TaskItem
 	if err := c.BindJSON(&body); err != nil {
@@ -67,6 +68,7 @@ func (h TaskItemHandler) Update(c *gin.Context) {
 	okResponse(c, nil)
 }
 
+// DeleteById delete model.TaskItem by id
 func (h TaskItemHandler) DeleteById(c *gin.Context) {
 	paramId, err := getIdParamAndValidate(c)
 	if err != nil {

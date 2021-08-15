@@ -17,6 +17,7 @@ type SimpleResponse struct {
 	Data         interface{}
 }
 
+// okIdsResponse response with http status OK 200 and any ids
 func okIdsResponse(c *gin.Context, ids ...int) {
 	res := NewSimpleResponse()
 	res.Success = true
@@ -24,6 +25,7 @@ func okIdsResponse(c *gin.Context, ids ...int) {
 	c.JSON(http.StatusOK, res.toJSON())
 }
 
+// errorResponse response with error and any param
 func errorResponse(httpCode int, c *gin.Context, errCode int, errMsg string) {
 	res := NewSimpleResponse()
 	res.ErrorCode = errCode
@@ -31,6 +33,7 @@ func errorResponse(httpCode int, c *gin.Context, errCode int, errMsg string) {
 	c.AbortWithStatusJSON(httpCode, res.toJSON())
 }
 
+// okResponse response with http status OK 200 and any body data
 func okResponse(c *gin.Context, data interface{}) {
 	res := NewSimpleResponse()
 	res.Success = true

@@ -5,6 +5,12 @@ import (
 	"github.com/Askalag/piece16/src/repository"
 )
 
+type Cmd interface {
+	FillFullTree() error
+	InitTables() error
+	DropAll() error
+}
+
 type Tree interface {
 	Create(body *model.Tree) (int, error)
 	Update(m *model.Tree) error
@@ -56,6 +62,7 @@ type TaskTimeItem interface {
 }
 
 type Service struct {
+	CmdService          Cmd
 	TreeService         Tree
 	TaskService         Task
 	TaskItemService     TaskItem
@@ -64,6 +71,7 @@ type Service struct {
 
 func NewService(r *repository.Repo) *Service {
 	return &Service{
+		CmdService:          NewCmdService(r),
 		TreeService:         NewTreeService(r),
 		TaskService:         NewTaskService(r.T),
 		TaskItemService:     NewTaskItemService(r.TI),

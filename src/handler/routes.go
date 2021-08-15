@@ -7,6 +7,7 @@ import (
 )
 
 type Handler struct {
+	cmd *CmdHandler
 	w   *WelcomeHandler
 	tr  *TreeHandler
 	t   *TaskHandler
@@ -16,6 +17,7 @@ type Handler struct {
 
 func MakeHandlers(s *service.Service) *Handler {
 	return &Handler{
+		cmd: NewCmdHandler(s.CmdService),
 		w:   NewWelcomeHandler(),
 		tr:  NewTreeHandler(s.TreeService),
 		t:   NewTaskHandler(s.TaskService),
@@ -37,6 +39,14 @@ func NewEngine(h *Handler) *gin.Engine {
 		wlc := restApi.Group("/wlc")
 		{
 			wlc.GET("/h", h.w.Hello)
+		}
+
+		// Commands group
+		cmd := restApi.Group("/cmd")
+		{
+			cmd.GET("/initTables", h.cmd.InitTables)
+			cmd.GET("/fillFullTree", h.cmd.fillFullTree)
+			cmd.GET("/dropAllTables", h.cmd.DropAll)
 		}
 
 		// Tree group

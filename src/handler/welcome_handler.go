@@ -8,6 +8,7 @@ import (
 type WelcomeHandler struct {
 }
 
+// Hello welcome page
 func (h *WelcomeHandler) Hello(c *gin.Context) {
 	c.JSON(http.StatusOK, "Here we go...")
 }

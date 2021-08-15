@@ -2,14 +2,21 @@ package repository
 
 import (
 	"github.com/Askalag/piece16/src/model"
+	"github.com/Askalag/piece16/src/repository/postgres"
 	"github.com/jmoiron/sqlx"
 )
 
 type Repo struct {
+	C   CmdRepo
 	TR  TreeRepo
 	T   TaskRepo
 	TI  TaskItemRepo
 	TTI TaskTimeItemRepo
+}
+
+type CmdRepo interface {
+	DropAll() error
+	InitTables() error
 }
 
 type TreeRepo interface {
@@ -59,9 +66,10 @@ type TaskTimeItemRepo interface {
 
 func NewTreeRepository(db *sqlx.DB) *Repo {
 	return &Repo{
-		TR:  NewTreePostgres(db),
-		T:   NewTaskPostgres(db),
-		TI:  NewTaskItemPostgres(db),
-		TTI: NewTimeItemPostgres(db),
+		C:   postgres.NewCmdPostgres(db),
+		TR:  postgres.NewTreePostgres(db),
+		T:   postgres.NewTaskPostgres(db),
+		TI:  postgres.NewTaskItemPostgres(db),
+		TTI: postgres.NewTimeItemPostgres(db),
 	}
 }
