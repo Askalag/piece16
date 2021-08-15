@@ -217,8 +217,8 @@ func fillAndCalcTree(tree model.Tree, tasks []model.Task, taskItems []model.Task
 	chTCalc := make(chan model.Task)
 
 	// filling times to taskItems
+	wg.Add(1)
 	go func() {
-		wg.Add(1)
 		for i, e := range taskItems {
 			for _, e2 := range times {
 				if e.Id == e2.ParentId {
@@ -234,8 +234,8 @@ func fillAndCalcTree(tree model.Tree, tasks []model.Task, taskItems []model.Task
 	wg.Wait()
 
 	// filling taskItems to tasks
+	wg.Add(1)
 	go func() {
-		wg.Add(1)
 		for i, e := range tasks {
 			for _, e2 := range taskItems {
 				if e.Id == e2.ParentId {

@@ -38,24 +38,34 @@ Golang Developer (Junior)
   
 
 **Пояснения предложенного решения:**
-
+---
 _Дерево представлено моделями:_
 
     дерево -> задание -> задачи -> трудозатраты
     tree -> Task -> TaskItem -> TimeItem
 
-_Запуск и настройка:_
+_Запуск и параметры (файлы):_
 
-    1. Запустить приложение в docker-compose (папка piece16):
-        docker-compose up
-        или
-        docker-compose up --build --force-recreate
-    2. При первом запуске сделать запрос (создать таблицы и схемы), например :
-        GET - localhost:8088/api/cmd/initTables - создание таблиц и схем.
-        GET - localhost:8088/api/cmd/fillFullTree - заполнение таблиц данными.
+    .env
+    config.yml
+    Dockerfile
+    docker-compose.yml
+
+_Запустить приложение в docker-compose (папка piece16):_
+
+    docker-compose up
+    или
+    docker-compose up --build --force-recreate 
+    
+_При первом запуске сделать запрос (создать таблицы и схемы), например:_
+
+    GET - localhost:8088/api/cmd/initTables - создание таблиц и схем.
+    GET - localhost:8088/api/cmd/fillFullTree - заполнение таблиц данными.
             Данные для заполнения можно изменить в файле cmd_service.go метод FillFullTree()
-        GET - localhost:8088/api/cmd/dropAllTables - дроп всех таблиц и схем, созданные
+    GET - localhost:8088/api/cmd/dropAllTables - дроп всех таблиц и схем, созданные
             при инициализации (см initTables выше)
-    3. Все запросы находятся в файле routes.go
-    4. Можно поделиться postman если надо...
+
+_Все запросы находятся в файле routes.go_
+
+_Можно поделиться postman если надо..._
    
